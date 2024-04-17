@@ -41,7 +41,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
-        {{- if .Values.passboltEnv.secret.secretProvider.enabled }}
+        {{- if .Values.passboltEnv.secretProvider.enabled }}
         - name: {{ $fullName }}-initsecretprovider
           command:
            - "/bin/bash"
@@ -227,7 +227,7 @@ spec:
           secret:
             secretName: {{ $Name }}-sec-redis-proxy
         {{- end -}}
-        {{- if .Values.passboltEnv.secret.secretProvider.enabled }}
+        {{- if .Values.passboltEnv.secretProvider.enabled }}
         - name: secretprovider
           csi:
             driver: secrets-store.csi.k8s.io
