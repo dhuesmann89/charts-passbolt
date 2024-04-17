@@ -231,6 +231,12 @@ passboltEnv:
     # -- Download Command for kubectl
     KUBECTL_DOWNLOAD_CMD: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
   secret:
+    secretProvider:
+      enabled: false
+      provider:
+      parameters: {}
+      data: []
+
     # -- Configure passbolt cake cache password
     CACHE_CAKE_DEFAULT_PASSWORD: CHANGEME
     # -- Configure passbolt default database password

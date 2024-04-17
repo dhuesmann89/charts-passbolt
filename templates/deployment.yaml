@@ -41,6 +41,19 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
+        {{- if .Values.passboltEnv.secret.secretProvider.enabled }}
+        - name: {{ $fullName }}-initsecretprovider
+          command:
+           - "/bin/bash"
+          args:
+            - "-c"
+            - |
+              echo "Mounting secrets from secret provider..."
+          volumeMounts:
+          - name: secretprovider-env
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
+        {{- end }}
         {{- if .Values.app.databaseInitContainer.enabled }}
         - name: {{ $fullName }}-init
           {{ include "passbolt.initImage" . | nindent 10 }}
@@ -214,6 +227,14 @@ spec:
           secret:
             secretName: {{ $Name }}-sec-redis-proxy
         {{- end -}}
+        {{- if .Values.passboltEnv.secret.secretProvider.enabled }}
+        - name: secretprovider
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "{{ include "passbolt-library.fullname" . }}-sec-env"
+        {{- end }}
         {{- with .Values.extraVolumes }}
         {{- tpl . $ | nindent 8 }}
         {{- end }}
